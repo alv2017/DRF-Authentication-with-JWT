@@ -28,7 +28,7 @@ class LogoutAllView(APIView):
     authentication_classes = (JWTAuthentication,)
 
     def get(self, request):
-        user_id = request.user_id
+        user_id = request.user.id
         tokens = OutstandingToken.objects.filter(user_id=user_id)
         for token in tokens:
             t, _ = BlacklistedToken.objects.get_or_create(token=token)
