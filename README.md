@@ -197,7 +197,7 @@ Execute unit tests:
 ```
 
 ```text
-    3.6. Delete User Account with Specified User ID
+    3.6. Delete User Account with Specified User ID: DELETE /api/v1/account/management/<int:id>/delete/
     
     !!! This request requires AUTHORIZATION !!! 
     Add into request headers:
