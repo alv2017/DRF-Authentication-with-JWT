@@ -14,6 +14,22 @@ class PersonalAccountSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
 
+class AccountPreviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AccountUser
+        fields = [
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "is_active",
+            "is_staff",
+            "last_login",
+        ]
+        read_only_fields = fields
+
+
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccountUser
