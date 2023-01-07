@@ -1,3 +1,4 @@
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, status
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
@@ -26,6 +27,11 @@ class PersonalAccountView(APIView):
         except AccountUser.DoesNotExist:
             raise NotFound(detail="Account not found.", code="account_not_found")
 
+    @swagger_auto_schema(
+        tags=["account"],
+        operation_summary="Personal Account",
+        operation_description="Shows account details of the logged in user",
+    )
     def get(self, request):
         account = self.get_object(request)
         serializer = PersonalAccountSerializer(account)
@@ -38,6 +44,14 @@ class AccountRetrieveView(generics.RetrieveAPIView):
     authentication_classes = (JWTAuthentication,)
     permission_classes = (IsAdminUser,)
     serializer_class = AccountPreviewSerializer
+
+    @swagger_auto_schema(
+        tags=["account"],
+        operation_summary="Retrieve Account by User ID",
+        operation_description="Retrieves user account by user ID",
+    )
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
 
 
 class AccountCreateView(generics.CreateAPIView):
@@ -57,13 +71,32 @@ class AccountCreateView(generics.CreateAPIView):
             response_serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )
 
+    @swagger_auto_schema(
+        tags=["account"],
+        operation_summary="Create Account",
+        operation_description="Creates user account",
+        responses={
+            status.HTTP_201_CREATED: AccountPreviewSerializer,
+        },
+    )
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
-class AccountListView(generics.ListCreateAPIView):
+
+class AccountListView(generics.ListAPIView):
     name = "account_list"
     queryset = AccountUser.objects.all()
     authentication_classes = (JWTAuthentication,)
     permission_classes = (IsAdminUser,)
     serializer_class = AccountPreviewSerializer
+
+    @swagger_auto_schema(
+        tags=["account"],
+        operation_summary="Accounts List",
+        operation_description="Displays a list of existing user accounts",
+    )
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
 
 class AccountUpdateView(generics.UpdateAPIView):
@@ -89,6 +122,28 @@ class AccountUpdateView(generics.UpdateAPIView):
 
         return Response(response_serializer.data)
 
+    @swagger_auto_schema(
+        tags=["account"],
+        operation_summary="Account Update",
+        operation_description="Updates user account data, full account data needs to be provided",
+        responses={
+            status.HTTP_200_OK: AccountPreviewSerializer,
+        },
+    )
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        tags=["account"],
+        operation_summary="Partial Account Update",
+        operation_description="Updates user account, accepts partial account update data",
+        responses={
+            status.HTTP_200_OK: AccountPreviewSerializer,
+        },
+    )
+    def patch(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
 
 class AccountDestroyView(generics.DestroyAPIView):
     name = "account_destroy"
@@ -96,3 +151,14 @@ class AccountDestroyView(generics.DestroyAPIView):
     authentication_classes = (JWTAuthentication,)
     permission_classes = (IsSuperUser,)
     serializer_class = AccountSerializer
+
+    @swagger_auto_schema(
+        tags=["account"],
+        operation_summary="Delete Account",
+        operation_description="Delete user account by provided user ID",
+        responses={
+            status.HTTP_204_NO_CONTENT: "",
+        },
+    )
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)

@@ -5,6 +5,27 @@ from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import BlacklistedToken, UntypedToken
 
 
+class TokenObtainPairResponseSerializer(serializers.Serializer):
+    access = serializers.CharField()
+    refresh = serializers.CharField()
+
+    def create(self, validated_data):
+        raise NotImplementedError()
+
+    def update(self, instance, validated_data):
+        raise NotImplementedError()
+
+
+class TokenRefreshResponseSerializer(serializers.Serializer):
+    access = serializers.CharField()
+
+    def create(self, validated_data):
+        raise NotImplementedError()
+
+    def update(self, instance, validated_data):
+        raise NotImplementedError()
+
+
 class TokenVerificationSerializer(serializers.Serializer):
     token = serializers.CharField()
 
@@ -17,3 +38,19 @@ class TokenVerificationSerializer(serializers.Serializer):
                 raise ValidationError("Token is blacklisted")
 
         return {}
+
+
+class TokenVerificationResponseSerializer(serializers.Serializer):
+    def create(self, validated_data):
+        raise NotImplementedError()
+
+    def update(self, instance, validated_data):
+        raise NotImplementedError()
+
+
+class TokenBlacklistResponseSerializer(serializers.Serializer):
+    def create(self, validated_data):
+        raise NotImplementedError()
+
+    def update(self, instance, validated_data):
+        raise NotImplementedError()

@@ -13,17 +13,44 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions
 
 from .views import WelcomeView
 
+api_version = settings.API_VERSION
+
+api_info = openapi.Info(
+    title=settings.API_NAME,
+    default_version=settings.API_VERSION,
+    description="Test description",
+    terms_of_service="https://www.google.com/policies/terms/",
+    license=openapi.License(name="MIT License"),
+)
+
+schema_view = get_schema_view(
+    public=True,
+    permission_classes=[permissions.AllowAny],
+)
+
+
 urlpatterns = [
+    # Django Admin Views
     path("admin/", admin.site.urls),
+    # API Schema
+    path(
+        f"api/{api_version}/swagger/ui/",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger-ui",
+    ),
     # Welcome View
-    path("api/v1/", WelcomeView.as_view(), name="api_welcome_view"),
+    path(f"api/{api_version}/", WelcomeView.as_view(), name="api_welcome_view"),
     # Authentication Views
-    path("api/v1/auth/", include("auth.urls")),
+    path(f"api/{api_version}/auth/", include("auth.urls")),
     # Account Management
-    path("api/v1/account/", include("account.urls")),
+    path(f"api/{api_version}/account/", include("account.urls")),
 ]
