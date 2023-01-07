@@ -42,6 +42,20 @@ Execute unit tests:
 
 ## API Endpoints
 
+### 0. API Schema
+
+```text
+    1.1. API Schema: GET /api/v1/swagger/ui/
+    
+    Description: Displays a web page with API Swagger specification. In order to try the endpoints an access token
+    is needed. Type into the form: Bearer Access_Token_Value
+    
+    Example: Suppose that the value of your access token is 'MyAccessToken123', then you need to enter into
+    the form: Bearer MyAccessToken123
+    
+    Success Status Code: 200 OK
+```
+
 ### 1. Authentication Endpoints
 
 ```text
